@@ -1,0 +1,306 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { copy, type SiteLanguage } from "../data/content";
+
+interface Props { lang: SiteLanguage }
+const { lang }: Props = Astro.props;
+const c = copy[lang];
+const nav = c.nav as readonly (readonly [string, string])[];
+const eventItems = c.events.items as readonly (readonly [string, string])[];
+const serviceItems = c.services.items as readonly (readonly [string, string])[];
+const contactTypes = c.contact.types as readonly string[];
+const ids = lang === "de"
+  ? { philosophy: "philosophie", concept: "konzept", events: "events", gallery: "galerie", about: "ueber-uns", contact: "kontakt" }
+  : { philosophy: "filosofia", concept: "concept", events: "eventi", gallery: "gallery", about: "chi-siamo", contact: "contatti" };
+const legalBase = lang === "de" ? "" : "/it";
+---
+
+<BaseLayout lang={lang} title={c.title} description={c.description}>
+  <header class="site-header" data-header>
+    <a class="brand" href={lang === "de" ? "/" : "/it/"} aria-label="Duo di Gusto home">
+      <img src="/images/logo-duo.png" width="520" height="406" alt="Duo di Gusto" />
+    </a>
+    <nav class="desktop-nav" aria-label={lang === "de" ? "Hauptnavigation" : "Navigazione principale"}>
+      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
+    <div class="header-actions">
+      <a class="language" href={c.languageHref} aria-label={c.languageLabel}>{c.languageShort}</a>
+      <a class="button button-gold header-quote" href={`#${ids.contact}`}>{c.quoteCta}</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span data-menu-label>{c.menu}</span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+      <nav aria-label={lang === "de" ? "Mobile Navigation" : "Navigazione mobile"}>
+        {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+      </nav>
+      <a class="button button-gold" href={`#${ids.contact}`}>{c.quoteCta}</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-image" src="/images/hero-lobster.webp" width="1920" height="1280" alt={c.hero.imageAlt} fetchpriority="high" />
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="container hero-content reveal">
+        <p class="eyebrow">{c.hero.eyebrow}</p>
+        <h1 id="hero-title">{c.hero.title}</h1>
+        <p class="hero-subtitle">{c.hero.subtitle}</p>
+        <div class="button-row">
+          <a class="button button-gold" href={`#${ids.contact}`}>{c.hero.primary}</a>
+          <a class="button button-outline" href={`#${ids.events}`}>{c.hero.secondary}</a>
+        </div>
+      </div>
+      <a class="scroll-cue" href={`#${ids.concept}`}>{lang === "de" ? "ENTDECKEN" : "SCOPRI"}</a>
+    </section>
+
+    <section class="section concept-section" id={ids.concept} aria-labelledby="concept-title">
+      <div class="container section-heading centered reveal">
+        <p class="eyebrow">{c.concept.eyebrow}</p>
+        <h2 id="concept-title">{c.concept.title}</h2>
+        <p>{c.concept.intro}</p>
+      </div>
+      <div class="food-pair">
+        <article class="food-panel reveal">
+          <img src="/images/gourmet-plate.webp" width="1200" height="1200" alt={c.gallery.alts[1]} loading="lazy" />
+          <div class="food-caption">
+            <p class="eyebrow">{c.concept.gourmet}</p>
+            <p>{c.concept.gourmetText}</p>
+          </div>
+        </article>
+        <div class="pair-divider" aria-hidden="true"></div>
+        <article class="food-panel reveal">
+          <img src="/images/finger-food.webp" width="1200" height="1200" alt={c.gallery.alts[2]} loading="lazy" />
+          <div class="food-caption">
+            <p class="eyebrow">{c.concept.finger}</p>
+            <p>{c.concept.fingerText}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section philosophy-section" id={ids.philosophy} aria-labelledby="philosophy-title">
+      <div class="container philosophy-grid">
+        <div class="reveal">
+          <p class="eyebrow">{c.philosophy.eyebrow}</p>
+          <h2 id="philosophy-title">{c.philosophy.quote}</h2>
+        </div>
+        <div class="philosophy-copy reveal">
+          <p class="lead">{c.philosophy.body}</p>
+          <p>{c.philosophy.detail}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section events-section" id={ids.events} aria-labelledby="events-title">
+      <div class="container events-intro reveal">
+        <div>
+          <p class="eyebrow">{c.events.eyebrow}</p>
+          <h2 id="events-title">{c.events.title}</h2>
+        </div>
+        <p>{c.events.body}</p>
+      </div>
+      <div class="container event-image-wrap reveal">
+        <img src="/images/corporate-event.webp" width="1800" height="1200" alt={c.events.imageAlt} loading="lazy" />
+      </div>
+      <div class="container event-list">
+        {eventItems.map(([title, description], index) => (
+          <article class="event-item reveal">
+            <span>0{index + 1}</span>
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section services-section" aria-labelledby="services-title">
+      <div class="container section-heading reveal">
+        <p class="eyebrow">{c.services.eyebrow}</p>
+        <h2 id="services-title">{c.services.title}</h2>
+      </div>
+      <div class="container service-list">
+        {serviceItems.map(([title, description], index) => (
+          <article class="service-item reveal">
+            <span>0{index + 1}</span>
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section about-section" id={ids.about} aria-labelledby="about-title">
+      <div class="about-image reveal">
+        <img src="/images/chefs-duo.webp" width="1600" height="1200" alt={c.about.imageAlt} loading="lazy" />
+      </div>
+      <div class="about-copy reveal">
+        <p class="eyebrow">{c.about.eyebrow}</p>
+        <h2 id="about-title">{c.about.title}</h2>
+        <p class="lead">{c.about.body}</p>
+        <div class="founders">
+          <div><strong>{c.about.zakaria}</strong><span>{c.about.zakariaRole}</span></div>
+          <div><strong>{c.about.mirko}</strong><span>{c.about.mirkoRole}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery-section" id={ids.gallery} aria-labelledby="gallery-title">
+      <div class="container section-heading centered reveal">
+        <p class="eyebrow">{c.gallery.eyebrow}</p>
+        <h2 id="gallery-title">{c.gallery.title}</h2>
+        <p>{c.gallery.body}</p>
+      </div>
+      <div class="gallery-grid">
+        <figure class="gallery-item gallery-wide reveal">
+          <img src="/images/signature-seafood.webp" width="1400" height="1100" alt={c.gallery.alts[0]} loading="lazy" />
+          <figcaption>{c.gallery.labels[0]}</figcaption>
+        </figure>
+        <figure class="gallery-item reveal">
+          <img src="/images/gourmet-plate.webp" width="1200" height="1200" alt={c.gallery.alts[1]} loading="lazy" />
+          <figcaption>{c.gallery.labels[1]}</figcaption>
+        </figure>
+        <figure class="gallery-item reveal">
+          <img src="/images/finger-food.webp" width="1200" height="1200" alt={c.gallery.alts[2]} loading="lazy" />
+          <figcaption>{c.gallery.labels[2]}</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section contact-section" id={ids.contact} aria-labelledby="contact-title">
+      <div class="container contact-grid">
+        <div class="contact-copy reveal">
+          <p class="eyebrow">{c.contact.eyebrow}</p>
+          <h2 id="contact-title">{c.contact.title}</h2>
+          <p>{c.contact.body}</p>
+          <a href="mailto:eventi@duodigusto.de">eventi@duodigusto.de</a>
+        </div>
+        <form class="contact-form reveal" data-contact-form novalidate>
+          <div class="field field-wide">
+            <label for={`name-${lang}`}>{c.contact.name}</label>
+            <input id={`name-${lang}`} name="name" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for={`email-${lang}`}>{c.contact.email}</label>
+            <input id={`email-${lang}`} name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for={`type-${lang}`}>{c.contact.type}</label>
+            <select id={`type-${lang}`} name="eventType" required>
+              {contactTypes.map((option, index) => <option value={index === 0 ? "" : option}>{option}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for={`date-${lang}`}>{c.contact.date}</label>
+            <input id={`date-${lang}`} name="date" type="date" />
+          </div>
+          <div class="field">
+            <label for={`city-${lang}`}>{c.contact.city}</label>
+            <input id={`city-${lang}`} name="city" autocomplete="address-level2" />
+          </div>
+          <div class="field">
+            <label for={`guests-${lang}`}>{c.contact.guests}</label>
+            <input id={`guests-${lang}`} name="guests" type="number" min="1" inputmode="numeric" />
+          </div>
+          <div class="field field-wide">
+            <label for={`message-${lang}`}>{c.contact.message}</label>
+            <textarea id={`message-${lang}`} name="message" rows="4" required></textarea>
+          </div>
+          <label class="consent field-wide">
+            <input type="checkbox" name="consent" required />
+            <span>{c.contact.consent}</span>
+          </label>
+          <div class="form-footer field-wide">
+            <button class="button button-gold" type="submit">{c.contact.submit}</button>
+            <p>{c.contact.note}</p>
+          </div>
+          <p class="form-status field-wide" role="status" aria-live="polite" data-form-status data-success={c.contact.success}></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <img src="/images/logo-duo.png" width="520" height="406" alt="Duo di Gusto" loading="lazy" />
+        <p>{c.footerTagline}</p>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:info@duodigusto.de">info@duodigusto.de</a>
+        <a href="mailto:eventi@duodigusto.de">eventi@duodigusto.de</a>
+        <a href={`${legalBase}/impressum/`}>{c.legal}</a>
+        <a href={`${legalBase}/datenschutz/`}>{c.privacy}</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© {new Date().getFullYear()} Duo di Gusto. {c.rights}</span>
+      <span>Gourmet & Event Experience</span>
+    </div>
+  </footer>
+
+  <script is:inline define:vars={{ closeLabel: c.close, menuLabel: c.menu }}>
+    const header = document.querySelector('[data-header]');
+    const toggle = document.querySelector('[data-menu-toggle]');
+    const menu = document.querySelector('[data-mobile-menu]');
+    const label = document.querySelector('[data-menu-label]');
+
+    const closeMenu = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      menu?.classList.remove('is-open');
+      if (label) label.textContent = menuLabel;
+      document.body.classList.remove('menu-open');
+    };
+
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      menu?.classList.toggle('is-open', !open);
+      if (label) label.textContent = open ? menuLabel : closeLabel;
+      document.body.classList.toggle('menu-open', !open);
+    });
+
+    menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
+    window.addEventListener('scroll', () => header?.classList.toggle('is-scrolled', window.scrollY > 24), { passive: true });
+
+    const form = document.querySelector('[data-contact-form]');
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      const data = new FormData(form);
+      const subject = encodeURIComponent(`Duo di Gusto - ${data.get('eventType') || 'Eventanfrage'}`);
+      const body = encodeURIComponent([
+        `Name / Unternehmen: ${data.get('name')}`,
+        `E-Mail: ${data.get('email')}`,
+        `Event: ${data.get('eventType')}`,
+        `Datum: ${data.get('date') || '-'}`,
+        `Stadt / Location: ${data.get('city') || '-'}`,
+        `Gäste: ${data.get('guests') || '-'}`,
+        '',
+        String(data.get('message') || ''),
+      ].join('\n'));
+      const status = form.querySelector('[data-form-status]');
+      if (status) status.textContent = status.dataset.success || '';
+      window.location.href = `mailto:eventi@duodigusto.de?subject=${subject}&body=${body}`;
+    });
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+    } else {
+      document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-visible'));
+    }
+  </script>
+</BaseLayout>

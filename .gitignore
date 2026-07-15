@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.npm-cache/
+.npmrc
+.DS_Store
+AGENTS.md
+design-qa.md
+qa-*.png
+source-assets/

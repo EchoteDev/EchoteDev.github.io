@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { SiteLanguage } from "../data/content";
+
+interface Props { lang: SiteLanguage; type: "impressum" | "privacy" }
+const { lang, type } = Astro.props;
+const isDe = lang === "de";
+const isImpressum = type === "impressum";
+const title = isImpressum ? (isDe ? "Impressum" : "Note legali") : (isDe ? "Datenschutzerklärung" : "Informativa privacy");
+const description = isImpressum
+  ? (isDe ? "Anbieterinformationen von Duo di Gusto." : "Informazioni legali di Duo di Gusto.")
+  : (isDe ? "Informationen zum Datenschutz bei Duo di Gusto." : "Informazioni sul trattamento dei dati di Duo di Gusto.");
+const home = isDe ? "/" : "/it/";
+---
+
+<BaseLayout lang={lang} title={`${title} | Duo di Gusto`} description={description} canonicalPath={`${isDe ? "" : "/it"}/${type === "impressum" ? "impressum" : "datenschutz"}/`}>
+  <main class="legal-main">
+    <article class="container legal-content">
+      <a class="eyebrow" href={home}>← DUO DI GUSTO</a>
+      <h1>{title}</h1>
+      {isImpressum ? (
+        <>
+          <div class="legal-notice">
+            <strong>{isDe ? "Vor Veröffentlichung vervollständigen" : "Da completare prima della pubblicazione"}</strong>
+            <p>{isDe
+              ? "Die vollständige Firmierung, ladungsfähige Anschrift, Rechtsform, Vertretungsberechtigten und gegebenenfalls Steuer- oder Registerdaten müssen noch ergänzt und juristisch geprüft werden."
+              : "Ragione sociale, indirizzo completo, forma giuridica, rappresentanti ed eventuali dati fiscali o di registro devono ancora essere inseriti e verificati da un professionista."}</p>
+          </div>
+          <h2>Duo di Gusto</h2>
+          <p>Gourmet & Event Experience</p>
+          <p>Founder & Executive Chef: Zakaria Lahdili<br />Founder & Executive Chef: Mirko Pisu</p>
+          <p>E-Mail: <a href="mailto:info@duodigusto.de">info@duodigusto.de</a><br />Events: <a href="mailto:eventi@duodigusto.de">eventi@duodigusto.de</a></p>
+        </>
+      ) : (
+        <>
+          <div class="legal-notice">
+            <strong>{isDe ? "Rechtliche Prüfung erforderlich" : "Verifica legale necessaria"}</strong>
+            <p>{isDe
+              ? "Diese Seite ist eine technische Vorlage. Verantwortlicher, Hosting-Anbieter, Rechtsgrundlagen, Speicherdauer und eingesetzte Dienste müssen vor Veröffentlichung anhand der tatsächlichen Konfiguration ergänzt werden."
+              : "Questa pagina è un modello tecnico. Titolare, hosting, basi giuridiche, tempi di conservazione e servizi utilizzati devono essere completati in base alla configurazione reale prima della pubblicazione."}</p>
+          </div>
+          <h2>{isDe ? "Kontaktformular" : "Modulo di contatto"}</h2>
+          <p>{isDe
+            ? "Die im Formular eingegebenen Daten werden aktuell nicht auf dem Webserver gespeichert. Beim Absenden wird eine E-Mail im lokalen E-Mail-Programm des Nutzers vorbereitet."
+            : "I dati inseriti nel modulo non vengono attualmente memorizzati sul server web. All'invio viene preparata un'email nel programma di posta dell'utente."}</p>
+          <h2>{isDe ? "Technisch notwendige Daten" : "Dati tecnicamente necessari"}</h2>
+          <p>{isDe
+            ? "Beim Aufruf einer Website können durch den Hosting-Anbieter technisch notwendige Server-Logdaten verarbeitet werden. Die konkreten Angaben sind nach Auswahl des Hosting-Anbieters zu ergänzen."
+            : "Durante l'accesso al sito, il provider di hosting può trattare log tecnici necessari. Le informazioni precise dovranno essere aggiunte dopo la scelta del provider."}</p>
+          <h2>Cookies</h2>
+          <p>{isDe
+            ? "Diese Version setzt keine Analyse-, Marketing- oder Profiling-Cookies. Falls später externe Dienste eingebunden werden, muss diese Erklärung aktualisiert und gegebenenfalls eine Einwilligung eingeholt werden."
+            : "Questa versione non utilizza cookie di analisi, marketing o profilazione. Se verranno aggiunti servizi esterni, l'informativa dovrà essere aggiornata e, quando necessario, dovrà essere richiesto il consenso."}</p>
+        </>
+      )}
+    </article>
+  </main>
+</BaseLayout>

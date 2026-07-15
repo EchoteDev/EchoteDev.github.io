@@ -1,0 +1,59 @@
+---
+import "@fontsource/cormorant-garamond/400.css";
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/manrope/400.css";
+import "@fontsource/manrope/500.css";
+import "@fontsource/manrope/600.css";
+import "../styles/global.css";
+import type { SiteLanguage } from "../data/content";
+
+interface Props {
+  lang: SiteLanguage;
+  title: string;
+  description: string;
+  canonicalPath?: string;
+}
+
+const { lang, title, description, canonicalPath = lang === "de" ? "/" : "/it/" }: Props = Astro.props;
+const canonical = new URL(canonicalPath, Astro.site);
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Duo di Gusto",
+  url: "https://duodigusto.de",
+  email: "eventi@duodigusto.de",
+  description,
+  founder: [
+    { "@type": "Person", name: "Zakaria Lahdili", jobTitle: "Founder & Executive Chef" },
+    { "@type": "Person", name: "Mirko Pisu", jobTitle: "Founder & Executive Chef" },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111111" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="de" href={new URL("/", Astro.site)} />
+    <link rel="alternate" hreflang="it" href={new URL("/it/", Astro.site)} />
+    <link rel="alternate" hreflang="x-default" href={new URL("/", Astro.site)} />
+    <link rel="icon" href="/images/logo-duo.png" type="image/png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL("/images/hero-lobster.webp", Astro.site)} />
+    <meta property="og:locale" content={lang === "de" ? "de_DE" : "it_IT"} />
+    <title>{title}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{lang === "de" ? "Zum Inhalt" : "Vai al contenuto"}</a>
+    <slot />
+  </body>
+</html>
